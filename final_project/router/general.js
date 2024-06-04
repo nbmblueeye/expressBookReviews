@@ -53,7 +53,21 @@ public_users.get('/author/:author',function (req, res) {
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const { title } = req.params;
+  const requestedByTitle = {};
+  for(let isbn in books){
+    if(books.hasOwnProperty(isbn)){
+        let book = books[isbn];
+        if(book.title === title){
+            requestedByTitle[isbn] = book
+            break;
+        }
+    }
+  }
+  return res.status(200).json({
+        message: "Requested book by title: " + title +" is shipped",
+        book: requestedByTitle
+    });
 });
 
 //  Get book review
