@@ -4,10 +4,22 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
-
 public_users.post("/register", (req,res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const { username, password } = req.body;
+  if(username && password){
+    if(!isValid(username)){
+        users.push({"username":username,"password":password});
+        return res.status(200).json({
+            message: "User successfully registred. Now you can login",
+            user:username 
+        });
+    }else{
+        return res.status(404).json({message: "username is already existed"});
+    }
+  }else{
+    return res.status(404).json({message: "username and password are required"});
+  }
 });
 
 // Get the book list available in the shop
@@ -30,7 +42,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
             book
         });
   }else{
-        return res.status(404).send("Book with " + isbn + " not found");
+        return res.status(404).json({ message: "Book with " + isbn + " not found" });
   }
  });
   
@@ -54,7 +66,7 @@ public_users.get('/author/:author',function (req, res) {
             book: requestedByAuthor
         });
     }else{
-        return res.status(404).send("Book with author:" + author + " not found");
+        return res.status(404).json({message: "Book with author:" + author + " not found"});
     }
 });
 
@@ -78,7 +90,7 @@ public_users.get('/title/:title',function (req, res) {
             book: requestedByTitle
         });
     }else{
-        return res.status(404).send("Book with title:" + title + " not found");
+        return res.status(404).json({message: "Book with title:" + title + " not found"});
     }
   
 });
@@ -94,7 +106,7 @@ public_users.get('/review/:isbn',function (req, res) {
             reviews
         });
   }else{
-        return res.status(404).send("Book by isbn=" + isbn + " not found");
+        return res.status(404).json({message: "Book by isbn=" + isbn + " not found"});
   }
 });
 
