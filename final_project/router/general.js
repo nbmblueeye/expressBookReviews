@@ -22,8 +22,8 @@ public_users.get('/',function (req, res) {
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
-  let { isbn } = req.params
-  let book = books[parseInt(isbn)]
+  let { isbn } = req.params;
+  let book = books[parseInt(isbn)];
   return res.status(200).json({
         message: "Requested book isbn=" + isbn +" is shipped",
         book
@@ -33,7 +33,21 @@ public_users.get('/isbn/:isbn',function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const { author } = req.params;
+  const requestedByAuthor = {};
+  for(let isbn in books){
+    if(books.hasOwnProperty(isbn)){
+        let book = books[isbn];
+        if(book.author === author){
+            requestedByAuthor[isbn] = book
+            break;
+        }
+    }
+  }
+  return res.status(200).json({
+        message: "Requested book by author: " + author +" is shipped",
+        book: requestedByAuthor
+    });
 });
 
 // Get all books based on title
