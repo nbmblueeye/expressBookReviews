@@ -24,10 +24,14 @@ public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
   let { isbn } = req.params;
   let book = books[parseInt(isbn)];
-  return res.status(200).json({
-        message: "Requested book isbn=" + isbn +" is shipped",
-        book
-    });
+  if(book){
+        return res.status(200).json({
+            message: "Requested book isbn=" + isbn +" is shipped",
+            book
+        });
+  }else{
+        return res.status(404).send("Book with " + isbn + " not found");
+  }
  });
   
 // Get book details based on author
@@ -44,10 +48,14 @@ public_users.get('/author/:author',function (req, res) {
         }
     }
   }
-  return res.status(200).json({
-        message: "Requested book by author: " + author +" is shipped",
-        book: requestedByAuthor
-    });
+    if( Object.keys(requestedByAuthor).length > 0 ){
+        return res.status(200).json({
+            message: "Requested book by author: " + author +" is shipped",
+            book: requestedByAuthor
+        });
+    }else{
+        return res.status(404).send("Book with author:" + author + " not found");
+    }
 });
 
 // Get all books based on title
@@ -64,16 +72,30 @@ public_users.get('/title/:title',function (req, res) {
         }
     }
   }
-  return res.status(200).json({
-        message: "Requested book by title: " + title +" is shipped",
-        book: requestedByTitle
-    });
+    if( Object.keys(requestedByTitle).length > 0 ){
+        return res.status(200).json({
+            message: "Requested book by title: " + title +" is shipped",
+            book: requestedByTitle
+        });
+    }else{
+        return res.status(404).send("Book with title:" + title + " not found");
+    }
+  
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let { isbn } = req.params;
+  let book = books[parseInt(isbn)];
+  if(book){
+        const reviews = book["reviews"];
+        return res.status(200).json({
+            message: "Requested book reviews by isbn=" + isbn +" is shipped",
+            reviews
+        });
+  }else{
+        return res.status(404).send("Book by isbn=" + isbn + " not found");
+  }
 });
 
 module.exports.general = public_users;
