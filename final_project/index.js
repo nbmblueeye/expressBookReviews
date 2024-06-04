@@ -14,9 +14,9 @@ app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
     if(req.session.authorization){
         const token = req.session.authorization["accessToken"]
-        jwt.verify(token, 'access', (err, user) => {
+        jwt.verify(token, 'access', (err, data) => {
             if(!err){
-                req.user = user;
+                req.user = data.username;
                 next();
             }else{
                 return res.status(403).json({message: "User not authenticated"});

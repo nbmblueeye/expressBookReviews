@@ -3,7 +3,16 @@ const jwt = require('jsonwebtoken');
 let books = require("./booksdb.js");
 const regd_users = express.Router();
 
-let users = [];
+let users = [
+    {
+        username:"user1",
+        password:"user1"
+    },
+    {
+        username:"user2",
+        password:"user2"
+    }
+];
 
 const isValid = (username)=>{ //returns boolean
 //write code to check is the username is valid
@@ -37,7 +46,7 @@ regd_users.post("/login", (req,res) => {
   }
   if(authenticatedUser(username, password)){
     const accessToken = jwt.sign({ username, password },'access', { expiresIn: 60 * 60 });
-    req.session.authorization = {accessToken, username};
+    req.session.authorization = { accessToken };
     return res.status(200).json({ 
         message: "User successfully logged in",
     });
@@ -50,9 +59,47 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const { isbn } = req.params;
+    const { review } = req.query;
+    if( Object.keys(books).includes(isbn) ){
+        let reviews = books[isbn]["reviews"];
+        if(Object.keys(reviews).length > 0){
+            if(Object.keys(reviews).includes(req.user)){
+                books[isbn]["reviews"][req.user] = {...reviews[req.user], ...{ review }}
+            }else{
+                books[isbn]["reviews"][req.user] = { review }
+            }
+        }else{
+            books[isbn]["reviews"][req.user] = { review }
+        }
+        return res.status(200).json({
+            message: "Your review is updated",
+        });
+    }else{
+        return res.status(404).json({ message: "Book with " + isbn + " not found" });
+    }
+
 });
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const { isbn } = req.params;
+    if( Object.keys(books).includes(isbn) ){
+        let reviews = books[isbn]["reviews"];
+        for(let key in reviews){
+            if(key == req.user && reviews.hasOwnProperty(key)){
+                delete books[isbn]["reviews"][key]
+            }
+        }
+        return res.status(200).json({
+            message: "Your review is deleted",
+        });
+    }else{
+        
+        return res.status(404).json({ message: "Book with " + isbn + " not found" });
+    }
+
+});
+
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;

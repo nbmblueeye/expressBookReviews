@@ -34,16 +34,16 @@ public_users.get('/',function (req, res) {
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
-  let { isbn } = req.params;
-  let book = books[parseInt(isbn)];
-  if(book){
+    let { isbn } = req.params;
+    if( Object.keys(books).includes(isbn) ){
+        let book = books[isbn];
         return res.status(200).json({
             message: "Requested book isbn=" + isbn +" is shipped",
             book
         });
-  }else{
-        return res.status(404).json({ message: "Book with " + isbn + " not found" });
-  }
+    }else{
+            return res.status(404).json({ message: "Book with " + isbn + " not found" });
+    }
  });
   
 // Get book details based on author
@@ -98,8 +98,8 @@ public_users.get('/title/:title',function (req, res) {
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
   let { isbn } = req.params;
-  let book = books[parseInt(isbn)];
-  if(book){
+  if( Object.keys(books).includes(isbn) ){
+        let book = books[isbn];
         const reviews = book["reviews"];
         return res.status(200).json({
             message: "Requested book reviews by isbn=" + isbn +" is shipped",
