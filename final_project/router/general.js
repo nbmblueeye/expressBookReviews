@@ -43,7 +43,6 @@ public_users.get('/', async(req, res) => {
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', async(req, res) => {
-  //Write your code here
     let { isbn } = req.params;
     try {
         await new Promise(resolve => setTimeout(resolve, 1000));
