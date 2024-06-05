@@ -73,12 +73,11 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
             books[isbn]["reviews"][req.user] = { review }
         }
         return res.status(200).json({
-            message: "Your review is updated",
+            message: "The review for the book with ISBN: " + isbn + " has been posted by User " + req.user,
         });
     }else{
         return res.status(404).json({ message: "Book with " + isbn + " not found" });
     }
-
 });
 
 regd_users.delete("/auth/review/:isbn", (req, res) => {
@@ -91,7 +90,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
             }
         }
         return res.status(200).json({
-            message: "Your review is deleted",
+            message: "The review for the book with ISBN: " + isbn + " posted by User " + req.user + " has been deleted",
         });
     }else{
         
